@@ -16,21 +16,34 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Install Android workload
+      - name: Install MAUI Android workload
         run: dotnet workload install maui-android
 
-      - name: Restore
-        run: dotnet restore
+      - name: Restore Android app only
+        run: >
+          dotnet restore
+          src/MobileI2VConsole/MobileI2VConsole.csproj
+          -p:TargetFramework=net10.0-android
 
       - name: Build Android APK
-        run: dotnet publish -f net10.0-android -c Release
+        run: >
+          dotnet publish
+          src/MobileI2VConsole/MobileI2VConsole.csproj
+          -f net10.0-android
+          -c Release
+          --no-restore
 
       - name: Find APK
-        run: find . -type f -name "*.apk" -print
+        run: |
+          echo "=== APK FILES ==="
+          find src/MobileI2VConsole/bin/Release/net10.0-android \
+            -type f \
+            -name "*.apk" \
+            -print
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: MobileI2V-APK
-          path: "**/*.apk"
+          path: "src/MobileI2VConsole/bin/Release/net10.0-android/**/*.apk"
           if-no-files-found: error
