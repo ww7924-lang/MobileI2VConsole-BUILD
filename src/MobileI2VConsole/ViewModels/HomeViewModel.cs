@@ -47,7 +47,8 @@ public partial class HomeViewModel : ObservableObject
         _fileService = fileService;
         _modelManager = modelManager;
         LoadPromptTemplates();
-        _ = CheckAndExtractModelsAsync();
+        // Disabled during startup: model extraction/loading must not run before the UI is ready.
+        // _ = CheckAndExtractModelsAsync();
     }
 
     partial void OnSelectedImagePathChanged(string? value)
